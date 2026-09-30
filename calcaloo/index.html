@@ -23,6 +23,8 @@
     .mascot { width: 160px; height: 160px; margin: 0 auto 1.25rem; padding: 18px; box-sizing: border-box;
       border-radius: 50%; background: #fdf3e7; box-shadow: 0 6px 24px rgba(0,0,0,.08); }
     .mascot img { width: 100%; height: 100%; display: block; }
+    .soon { color: var(--muted); margin: -1rem 0 2rem; }
+    [hidden] { display: none !important; }
   </style>
 </head>
 <body>
@@ -30,7 +32,9 @@
     <div class="mascot"><img src="/calcaloo/mascot.svg" alt="Calcaloo mascot" width="124" height="124"></div>
     <h1>Calcaloo: Calorie Tracker</h1>
     <p class="lead">Hi, I'm Calcaloo! I make calorie tracking feel like a game: daily streaks, level-ups, achievements, and AI photo scans that turn a meal into a calorie estimate in seconds.</p>
-    <a class="store" href="https://apps.apple.com/app/id6757434158">Get Calcaloo on the App Store</a>
+    <a id="ios" class="store" href="https://apps.apple.com/app/id6757434158">Get Calcaloo on the App Store</a>
+    <a id="play" class="store" href="#" hidden>Get it on Google Play</a>
+    <p id="soon" class="soon">Android version coming soon.</p>
     <nav>
       <a href="https://khrolovich.github.io/calorie-tracker-privacy-policy/">Privacy Policy</a>
       <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of Use</a>
@@ -41,5 +45,25 @@
       <p>Questions? <a href="mailto:calcaloo@proton.me">calcaloo@proton.me</a> — Calcaloo Team</p>
     </footer>
   </main>
+  <script>
+    // Switch to true when Calcaloo 1.2 is live in production on Google Play.
+    var PLAY_ENABLED = false;
+    var params = new URLSearchParams(location.search);
+    var raw = params.get('ct');
+    var ct = ((raw || 'web-site').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40)) || 'web-site';
+    var appStore = 'https://apps.apple.com/app/apple-store/id6757434158?pt=128407090&ct=' + encodeURIComponent(ct) + '&mt=8';
+    var play = 'https://play.google.com/store/apps/details?id=com.khrolovich.calorietracker&referrer=' +
+      encodeURIComponent('utm_source=' + ct + '&utm_medium=social&utm_campaign=launch');
+    document.getElementById('ios').href = appStore;
+    document.getElementById('play').href = play;
+    if (PLAY_ENABLED) { document.getElementById('play').hidden = false; document.getElementById('soon').hidden = true; }
+    // Only visitors from a campaign link (?ct=...) are sent straight to the store; the page itself stays readable.
+    if (raw) {
+      var ua = navigator.userAgent || '';
+      var isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      if (isIOS) location.replace(appStore);
+      else if (/Android/.test(ua) && PLAY_ENABLED) location.replace(play);
+    }
+  </script>
 </body>
 </html>
