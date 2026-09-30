@@ -47,7 +47,7 @@
   </main>
   <script>
     // Switch to true when Calcaloo 1.2 is live in production on Google Play.
-    var PLAY_ENABLED = false;
+    var PLAY_ENABLED = true;
     var params = new URLSearchParams(location.search);
     var raw = params.get('ct');
     var ct = ((raw || 'web-site').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40)) || 'web-site';
